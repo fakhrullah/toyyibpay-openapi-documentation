@@ -244,38 +244,71 @@ paths:
           description: OK
     
   /index.php/api/createBillMultiPayment:
-    get:
+    post:
       tags:
         - "Bill"
+      summary: NOT YET
       description: Create bill for multiple payment
       responses:
         '200':
           description: OK
     
   /index.php/api/runBill:
-    get:
+    post:
       tags:
         - "Bill"
+      summary: NOT YET
       description: Run Bill can make customer do the payment
       responses:
         '200':
           description: OK
     
   /admin/api/getAllBill:
-    get:
+    post:
       tags:
         - "Bill"
+      summary: NOT YET
       description: Run Bill can make customer do the payment
       responses:
         '200':
           description: OK
 
-
+  # Bank
   /index.php/api/getBank:
     get:
       tags:
         - "Bank"
+      summary: Get banks
       description: Get list of banks that can be used by user to make the payment.
       responses:
         '200':
           description: OK
+
+  /index.php/api/getBankFPX:
+    get:
+      tags:
+        - Bank
+      summary: Get banks FPX
+      description: Get list of banks that are supported by Toyyibpay with bank code. When you use runBill api, bank code is required.
+      responses:
+        '200':
+          description: OK
+
+  # Package
+  /index.php/api/getPackage:
+    get:
+      tags:
+        - Package
+      summary: Get package
+      description: Get list of packages offered by ToyyibPay. When you create user with API call, you are required to provided package information.
+      responses:
+        '200':
+          description: OK
+
+tags:
+  - name: Bill
+  - name: Category
+  - name: Bank
+  - name: Package
+  - name: Return URL
+    description: hello
