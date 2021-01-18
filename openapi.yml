@@ -67,7 +67,7 @@ info:
     
     Your userSecretKey will look like this: `j2d2v697-603c-4a2e-0yxz-ktyi448gp153`
 
-    **! WARNING** Never share userSecretKey to other people you do not trust. NEVER make it publicly available. It also mean you SHOULD NOT use the userSecretKey on client side software.
+    **! WARNING** Never share userSecretKey to other people you do not trust. NEVER make it publicly available. It means you SHOULD NOT use the userSecretKey on client side software.
 
     ### How to get userSecretKey
 
@@ -87,10 +87,13 @@ paths:
   # Category
   /index.php/api/createCategory:
     $ref: 'createCategory.yaml'
+
   /index.php/api/getCategoryDetails:
     post:
       tags:
         - "Category"
+      summary: Get category
+      description: Get category detail information
       requestBody:
         required: true
         content:
@@ -242,6 +245,36 @@ paths:
       responses:
         '200':
           description: OK
+
+  /index.php/api/getBillTransactions:
+    post:
+      tags:
+        - Bill
+      summary: Get bill transactions
+      description: Check bill payment status by submitting Bill Code and Bill Payment Status(Optional).
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                billCode:
+                  type: string
+                  description: Bill code.
+                billpaymentStatus:
+                  type: string
+                  description: |
+                    Bill payment status.  
+                    `1` - Successful transaction.  
+                    `2` - Pending transaction.  
+                    `3` - Unsuccessful transaction.  
+                    `4` - Pending.
+              required:
+                - billCode
+      responses:
+        '200':
+          description: OK
     
   /index.php/api/createBillMultiPayment:
     post:
@@ -305,10 +338,91 @@ paths:
         '200':
           description: OK
 
+  # User
+  /index.php/api/createAccount:
+    post:
+      tags:
+        - User
+      summary: NOT YET
+      description: |
+        **For Enterprise Accunt Only**
+      responses:
+        '200':
+          description: OK
+  
+  /index.php/api/getUserStatus:
+    post:
+      tags:
+        - User
+      summary: NOT YET
+      description: > 
+        **For Enterprise Accunt Only**
+      responses:
+        '200':
+          description: OK
+
+  /admin/api/getAllUser:
+    post:
+      tags:
+        - User
+      summary: NOT YET
+      responses:
+        '200':
+          description: OK
+
+  # Settlement
+  /admin/api/getSettlement:
+    post:
+      tags:
+        - Settlement
+      summary: NOT YET
+      responses:
+        '200':
+          description: OK
+
+  /admin/api/getSettlementSummary:
+    post:
+      tags:
+        - Settlement
+      summary: NOT YET
+      responses:
+        '200':
+          description: OK
+
 tags:
   - name: Bill
+  - name: Return URL Parameter
+    description: |
+      When your created bill had `billReturnUrl`, your customer will redirect to that URL with query parameters as the following:
+
+      - **status_id** : Payment status. 1 = success, 2 = pending, 3 = fail.
+      - **billcode** : Your billcode / permanent link.
+      - **order_id** : Your external payment reference no, if specified `billExternalReferenceNo` when you create the bill.
+
+      Example:
+
+      ```
+      <your-return-url>/?status_id=1&billcode=90uf2fe&order_id=TRF20200923-XX021
+      ```
+  - name: Callback Parameter
+    description: |
+      When your created bill had `billCallbackUrl`, your customer will redirect to that URL with query parameters as the following:
+
+      - **refno** : Payment reference no
+      - **status** : Payment status. 1= success, 2=pending, 3=fail
+      - **reason** : Reason for the status received
+      - **billcode** : Your billcode / permanent link
+      - **order_id** : Your external payment reference no, if specified
+      - **amount** : Payment amount received
+
+      Example:
+
+      ```
+      <your-return-url>/?refno=fawfw&status=1&billcode=90uf2fe&order_id=TRF20200923-XX021&reason=lorem-ipsum&amount=1150
+      ```
+
   - name: Category
   - name: Bank
+  - name: User
   - name: Package
-  - name: Return URL
-    description: hello
+  - name: Settlement

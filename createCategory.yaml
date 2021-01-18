@@ -2,6 +2,7 @@
 post:
   tags:
     - "Category"
+  summary: Create a Category
   description: |
     Create a Category. Category is a group of bills.
   requestBody:
