@@ -1,0 +1,18 @@
+{
+  "name": "toyyibpay-better-doc",
+  "version": "0.1.0",
+  "description": "ToyyibPay better documentation (Unofficial)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-redoc": "redoc-cli bundle openapi.yml --output index.html"
+  },
+  "keywords": [
+    "toyyibpay"
+  ],
+  "author": "Fakhrullah Padzil (@fajarhac)",
+  "license": "MIT",
+  "dependencies": {
+    "redoc-cli": "^0.10.2"
+  }
+}
