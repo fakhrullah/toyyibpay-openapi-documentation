@@ -1,0 +1,281 @@
+openapi: '3.0.2'
+info:
+  title: Toyyibpay Better Documentation (Unofficial)
+  version: '1.0.0'
+  description: |
+    Based on official Toyyibpay API Reference (https://toyyibpay.com/apireference/), I created this documentation because the official documentation are showing only PHP example.
+
+    Any API **should** use `curl` as example, because `curl` showing most basic way API calling. From the basic API documentation programmers can use it as reference to use with any language the prefer such as JavaScript (node.js), PHP, Phyton and others.
+
+    So, I hope with this documentation, it will make my job easier to refer and use Toyyibpay API. This is created for own used, but I believe this can help others too. So, I make it public.
+
+    > ...
+    >
+    > **[ WARNING ]**
+    >
+    > This documentation is not complete, I wrote API that I usually use only. Unless Toyyibpay (the company) willing to sponsor (_in shape of cash_), I might spend my times to complete this documentation.
+    >
+    > ...
+
+    ## Testing / Sandbox Mode
+
+    When developing software, you will want to test your code is working or not. At this time, you do not want to really pay real money.
+
+    So, that is why Toyyibpay have an Sandbox Mode. **Always** use sandbox mode when you are on development.
+
+    ### How to use sandbox mode
+
+    1. Create an account at `https://dev.toyyibpay.com`.
+    2. Use `https://dev.toyyibpay.com` url for testing. You can create dummy bills and payments.
+
+    For online banking transaction tests, use banks:
+
+    - SBI BANK A (for success transaction)
+
+    - SBI BANK B (for fail transaction; insufficient fund)
+
+    - SBI BANK C (for Pending Return / Callback from bank - 30 min)
+
+    > ...
+    >
+    > Username : 1234  
+    > Password : 1234
+    >
+    > ...
+
+    You can use admin dashboard at `https://dev.toyyibpay.com`, similar way with real Toyyibpay production at `https://toyyibpay.com`.
+
+    ## API Process Flow
+
+    Your customer need a bill to make a payment. So, you have to create a bill, then send the bill detail to your customer.
+    But, bill MUST belong to a Category which is a group of bills. So, if there is no Category yet, you need to create a Category then only after that you can create the bill.
+
+    Toyyibpay payment flow:
+
+    1. Customer visits your site.
+    2. Customer chooses to make payment.
+    3. Your site (on the backend for better security) creates a Bill via API call.
+    4. Toyyibpay API returns Bill's code.
+    5. Your site redirects the customer to Bill's URL.
+    6. Customer makes payment through Toyyibpay website. They can choose their payment option of choice.
+    7. ToyyibPay sends a server-side update (Payment Completion) to your site on Bill's status on payment failure or success.
+    8. Your site can check payment status via API call.
+
+    ## Get userSecretKey for most API call
+
+    Most API Toyyibpay need userSecretKey as a key to identified who are making the request.
+    
+    Your userSecretKey will look like this: `j2d2v697-603c-4a2e-0yxz-ktyi448gp153`
+
+    **! WARNING** Never share userSecretKey to other people you do not trust. NEVER make it publicly available. It also mean you SHOULD NOT use the userSecretKey on client side software.
+
+    ### How to get userSecretKey
+
+    1. Login ToyyibPay or sandbox ToyyibPay _([dev.toyyibpay.com](https://dev.toyyibpay.com))_.
+
+    2. Find your userSecretKey at the bottom left of main page (dashboard).  
+    ------ screenshot here ---
+
+servers:
+  - url: https://dev.toyyibpay.com
+    description: Sandbox server. Use this url for testing.
+  - url: https://toyyibpay.com
+    description: Real Toyyibpay server. Use this url on your production software.
+    
+paths:
+
+  # Category
+  /index.php/api/createCategory:
+    $ref: 'createCategory.yaml'
+  /index.php/api/getCategoryDetails:
+    post:
+      tags:
+        - "Category"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userSecretKey:
+                  description: User Secret Key.
+                  type: string
+                  example:  j2d2v697-603c-4a2e-0yxz-ktyi448gp153
+                categoryCode:
+                  description: Category code.
+                  type: string
+              required:
+                - userSecretKey
+                - categoryCode
+      responses:
+        '200':
+          description: OK
+
+  # Bill
+  /index.php/api/createBill:
+    post:
+      tags:
+        - "Bill"
+      summary: Create bill
+      description: Bill serves as an invoice to your customer. In the example below, we will show you how to create a Bill. You need to pass the following parameters to generate category code.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userSecretKey:
+                  type: string
+                  description: User secret key
+                  example:  j2d2v697-603c-4a2e-0yxz-ktyi448gp153
+                categoryCode:
+                  type: string
+                  description: Category code
+                billName:
+                  type: string
+                  description: Bill name. Only alphanumeric characters, space and underscore (`_`) allowed. Maximum 30 characters.
+                  maxLength: 30
+                billDescription:
+                  type: string
+                  description: Bill description. Only alphanumeric characters, space and underscore (`_`) is allow. Maximum 100 characters.
+                  maxLength: 100
+                billPriceSetting:
+                  type: number
+                  description: |
+                    Bill price setting.
+                    For fixed amount bill, set it to 1 and insert bill amount. Fixed amount bill means as you set the price.
+                    For dynamic bill (user can insert the amount to pay), set it to 0. Dynamic bill means your customer decides how much they want to pay.
+                  enum:
+                    - 0
+                    - 1
+                billAmount:
+                  type: number
+                  description: | 
+                    Bill amount. The **amount is in cent**. For example, for RM 1 set it `100`, for RM 11.50, set billAmount to `1150`.
+                    If you set billPriceSetting to 1 (dynamic bill), please put 0.
+                  example: 1150
+                billPayorInfo:
+                  type: number
+                  description: If you want to create open bill without require payer information, set it to 0. If you need payer information, set it to 1
+                  enum:
+                    - 0
+                    - 1
+                billReturnUrl:
+                  type: string
+                  description: URL to redirect customer after payment complete.
+                  nullable: true
+                billCallbackUrl:
+                  type: string
+                  description: URL to redirect customer after successful payment.
+                billExternalReferenceNo:
+                  type: string
+                  description: Your own system bill reference number. You can use this reference number to check the payment status for the bill.
+                  example: TRF20200923-XX021
+                billTo:
+                  type: string
+                  description: Customer name.
+                billEmail:
+                  type: string
+                  description: Customer email.
+                billPhone:
+                  type: string
+                  description: Customer phone number.
+                billPaymentChannel:
+                  type: number
+                  description: |
+                    Set payment method allow for the bill.  
+                    `0` for payment with online banks (FPX) only.  
+                    `1` for payment with credit card only.
+                    `1` for both payment method, online banking and credit card.
+                  enum:
+                    - 0
+                    - 1
+                    - 2
+                billSplitPayment:
+                  type: number
+                  enum:
+                    - 0
+                    - 1
+                  description: Set 1 if you want the payment to be splitted to other ToyyibPay users.
+                billSplitPaymentArgs:
+                  type: array
+                  description: JSON for split payment.
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        description: ToyyibPay user id.
+                        example: johndoe
+                      amount:
+                        description: >
+                          Amount money you want to split. In cents: insert `200` for RM 2.00.
+                        example: 200
+                billDisplayMerchant:
+                  type: number
+                  enum:
+                    - 0
+                    - 1
+                  description: Display merchant info in your customer's email. Set `1` to show and `0` to hide.
+                billContentEmail:
+                  type: string
+                  description: Additional messages by sending an extra email to your customer.
+                billChargeToCustomer:
+                  type: number
+                  enum:
+                    - 0
+                    - 1
+                    - 2
+                  description: >
+                    Leave blank to set charges for both FPX and Credit Card on bill owner.  
+                    `0` to charge FPX to customer, Credit Card to bill owner.
+                    `1` to charge Credit Card to customer, FPX to bill owner.
+                    `2` to charge both FPX and Credit Card to customer. 
+              required:
+                - userSecretKey
+                - categoryCode
+                - billName
+                - billDescription
+                - billPriceSetting
+                - billAmount
+      responses:
+        '200':
+          description: OK
+    
+  /index.php/api/createBillMultiPayment:
+    get:
+      tags:
+        - "Bill"
+      description: Create bill for multiple payment
+      responses:
+        '200':
+          description: OK
+    
+  /index.php/api/runBill:
+    get:
+      tags:
+        - "Bill"
+      description: Run Bill can make customer do the payment
+      responses:
+        '200':
+          description: OK
+    
+  /admin/api/getAllBill:
+    get:
+      tags:
+        - "Bill"
+      description: Run Bill can make customer do the payment
+      responses:
+        '200':
+          description: OK
+
+
+  /index.php/api/getBank:
+    get:
+      tags:
+        - "Bank"
+      description: Get list of banks that can be used by user to make the payment.
+      responses:
+        '200':
+          description: OK
