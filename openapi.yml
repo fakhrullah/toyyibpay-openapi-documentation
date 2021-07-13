@@ -114,6 +114,11 @@ paths:
       responses:
         '200':
           description: OK
+      x-codeSamples:
+        - lang: curl
+          source: >
+            curl -d "userSecretKey=j2d2v697-603c-4a2e-0yxz-ktyi448gp153&categoryCode=2405114m" -X POST https://dev.toyyibpay.com/index.php/api/getCategoryDetails
+
 
   # Bill
   /index.php/api/createBill:
@@ -122,6 +127,14 @@ paths:
         - "Bill"
       summary: Create bill
       description: Bill serves as an invoice to your customer. In the example below, we will show you how to create a Bill. You need to pass the following parameters to generate category code.
+
+      x-codeSamples:
+        - lang: curl
+          source: > 
+            curl -d "userSecretKey=j2d2v697-603c-4a2e-0yxz-ktyi448gp153&categoryCode=2405114m&billName='Daging kambing perap'&billDescription='Daging kambing perap'&billPriceSetting=1000" -X POST https://dev.toyyibpay.com/index.php/api/createBill
+        - lang: JavaScript (ExpressJS)
+          source: >
+            console.log('hello')
       requestBody:
         required: true
         content:
@@ -275,6 +288,11 @@ paths:
       responses:
         '200':
           description: OK
+      x-codeSamples:
+        - lang: curl
+          source: >
+            curl -d "userSecretKey=j2d2v697-603c-4a2e-0yxz-ktyi448gp153&billCode=28mfcu8s" -X POST https://dev.toyyibpay.com/index.php/api/getBillTransactions
+          
     
   /index.php/api/createBillMultiPayment:
     post:
@@ -316,6 +334,9 @@ paths:
       responses:
         '200':
           description: OK
+      x-codeSamples:
+        - lang: curl
+          source: curl -X GET https://dev.toyyibpay.com/index.php/api/getBank
 
   /index.php/api/getBankFPX:
     get:
@@ -326,6 +347,9 @@ paths:
       responses:
         '200':
           description: OK
+      x-codeSamples:
+        - lang: curl
+          source: curl -X GET https://dev.toyyibpay.com/index.php/api/getBankFPX
 
   # Package
   /index.php/api/getPackage:
@@ -337,6 +361,9 @@ paths:
       responses:
         '200':
           description: OK
+      x-codeSamples:
+        - lang: curl
+          source: curl -X GET https://dev.toyyibpay.com/index.php/api/getPackage
 
   # User
   /index.php/api/createAccount:

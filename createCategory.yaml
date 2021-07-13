@@ -33,3 +33,9 @@ post:
         application/json:
           schema:
             example: [{"CategoryCode": "od708wve"}]
+
+  x-codeSamples:
+    - lang: curl
+      source: >
+        curl -d "userSecretKey=j2d2v697-603c-4a2e-0yxz-ktyi448gp153&catname=Kubus%20Official&catdescription=Fund%20for%20Kubus%20Official" -X POST https://dev.toyyibpay.com/index.php/api/createCategory
+    

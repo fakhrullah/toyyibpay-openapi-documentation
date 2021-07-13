@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-redoc": "redoc-cli bundle openapi.yml --output index.html"
+    "build-redoc": "redoc-cli bundle openapi.yml --output index.html",
+    "build-swagger": "echo 'Should create Swagger kind documentation website'"
   },
   "keywords": [
     "toyyibpay"
