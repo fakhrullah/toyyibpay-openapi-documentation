@@ -1,7 +1,7 @@
-openapi: '3.0.2'
+openapi: 3.0.2
 info:
   title: Toyyibpay Better Documentation (Unofficial)
-  version: '1.0.0'
+  version: 1.0.0
   description: |
     Based on official Toyyibpay API Reference (https://toyyibpay.com/apireference/), I created this documentation because the official documentation are showing only PHP example.
 
@@ -64,7 +64,7 @@ info:
     ## Get userSecretKey for most API call
 
     Most API Toyyibpay need userSecretKey as a key to identified who are making the request.
-    
+
     Your userSecretKey will look like this: `j2d2v697-603c-4a2e-0yxz-ktyi448gp153`
 
     **! WARNING** Never share userSecretKey to other people you do not trust. NEVER make it publicly available. It means you SHOULD NOT use the userSecretKey on client side software.
@@ -75,23 +75,57 @@ info:
 
     2. Find your userSecretKey at the bottom left of main page (dashboard).  
     ------ screenshot here ---
-
 servers:
-  - url: https://dev.toyyibpay.com
+  - url: 'https://dev.toyyibpay.com'
     description: Sandbox server. Use this url for testing.
-  - url: https://toyyibpay.com
+  - url: 'https://toyyibpay.com'
     description: Real Toyyibpay server. Use this url on your production software.
-    
 paths:
-
-  # Category
-  /index.php/api/createCategory:
-    $ref: 'createCategory.yaml'
-
-  /index.php/api/getCategoryDetails:
+  /index.php/api/createCategory:    
     post:
       tags:
         - "Category"
+      summary: Create a Category
+      description: |
+        Create a Category. Category is a group of bills.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                catname:
+                  description: Category name
+                  type: string
+                catdescription:
+                  description: Category description
+                  type: string
+                userSecretKey:
+                  description: User Secret Key.
+                  type: string
+                  example:  j2d2v697-603c-4a2e-0yxz-ktyi448gp153
+              required:
+                - userSecretKey
+                - catname
+                - catdescription
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                example: [{"CategoryCode": "od708wve"}]
+
+      x-codeSamples:
+        - lang: curl
+          source: >
+            curl -d "userSecretKey=j2d2v697-603c-4a2e-0yxz-ktyi448gp153&catname=Kubus%20Official&catdescription=Fund%20for%20Kubus%20Official" -X POST https://dev.toyyibpay.com/index.php/api/createCategory
+        
+  /index.php/api/getCategoryDetails:
+    post:
+      tags:
+        - Category
       summary: Get category
       description: Get category detail information
       requestBody:
@@ -104,7 +138,7 @@ paths:
                 userSecretKey:
                   description: User Secret Key.
                   type: string
-                  example:  j2d2v697-603c-4a2e-0yxz-ktyi448gp153
+                  example: j2d2v697-603c-4a2e-0yxz-ktyi448gp153
                 categoryCode:
                   description: Category code.
                   type: string
@@ -116,24 +150,20 @@ paths:
           description: OK
       x-codeSamples:
         - lang: curl
-          source: >
+          source: |
             curl -d "userSecretKey=j2d2v697-603c-4a2e-0yxz-ktyi448gp153&categoryCode=2405114m" -X POST https://dev.toyyibpay.com/index.php/api/getCategoryDetails
-
-
-  # Bill
   /index.php/api/createBill:
     post:
       tags:
-        - "Bill"
+        - Bill
       summary: Create bill
-      description: Bill serves as an invoice to your customer. In the example below, we will show you how to create a Bill. You need to pass the following parameters to generate category code.
-
+      description: 'Bill serves as an invoice to your customer. In the example below, we will show you how to create a Bill. You need to pass the following parameters to generate category code.'
       x-codeSamples:
         - lang: curl
-          source: > 
+          source: |
             curl -d "userSecretKey=j2d2v697-603c-4a2e-0yxz-ktyi448gp153&categoryCode=2405114m&billName='Daging kambing perap'&billDescription='Daging kambing perap'&billPriceSetting=1000" -X POST https://dev.toyyibpay.com/index.php/api/createBill
         - lang: JavaScript (ExpressJS)
-          source: >
+          source: |
             console.log('hello')
       requestBody:
         required: true
@@ -145,17 +175,17 @@ paths:
                 userSecretKey:
                   type: string
                   description: User secret key
-                  example:  j2d2v697-603c-4a2e-0yxz-ktyi448gp153
+                  example: j2d2v697-603c-4a2e-0yxz-ktyi448gp153
                 categoryCode:
                   type: string
                   description: Category code
                 billName:
                   type: string
-                  description: Bill name. Only alphanumeric characters, space and underscore (`_`) allowed. Maximum 30 characters.
+                  description: 'Bill name. Only alphanumeric characters, space and underscore (`_`) allowed. Maximum 30 characters.'
                   maxLength: 30
                 billDescription:
                   type: string
-                  description: Bill description. Only alphanumeric characters, space and underscore (`_`) is allow. Maximum 100 characters.
+                  description: 'Bill description. Only alphanumeric characters, space and underscore (`_`) is allow. Maximum 100 characters.'
                   maxLength: 100
                 billPriceSetting:
                   type: number
@@ -168,13 +198,13 @@ paths:
                     - 1
                 billAmount:
                   type: number
-                  description: | 
+                  description: |
                     Bill amount. The **amount is in cent**. For example, for RM 1 set it `100`, for RM 11.50, set billAmount to `1150`.
                     If you set billPriceSetting to 1 (dynamic bill), please put 0.
                   example: 1150
                 billPayorInfo:
                   type: number
-                  description: If you want to create open bill without require payer information, set it to 0. If you need payer information, set it to 1
+                  description: 'If you want to create open bill without require payer information, set it to 0. If you need payer information, set it to 1'
                   enum:
                     - 0
                     - 1
@@ -225,7 +255,7 @@ paths:
                         description: ToyyibPay user id.
                         example: johndoe
                       amount:
-                        description: >
+                        description: |
                           Amount money you want to split. In cents: insert `200` for RM 2.00.
                         example: 200
                 billDisplayMerchant:
@@ -243,11 +273,8 @@ paths:
                     - 0
                     - 1
                     - 2
-                  description: >
-                    Leave blank to set charges for both FPX and Credit Card on bill owner.  
-                    `0` to charge FPX to customer, Credit Card to bill owner.
-                    `1` to charge Credit Card to customer, FPX to bill owner.
-                    `2` to charge both FPX and Credit Card to customer. 
+                  description: |
+                    Leave blank to set charges for both FPX and Credit Card on bill owner.   `0` to charge FPX to customer, Credit Card to bill owner. `1` to charge Credit Card to customer, FPX to bill owner. `2` to charge both FPX and Credit Card to customer. 
               required:
                 - userSecretKey
                 - categoryCode
@@ -258,7 +285,6 @@ paths:
       responses:
         '200':
           description: OK
-
   /index.php/api/getBillTransactions:
     post:
       tags:
@@ -290,45 +316,39 @@ paths:
           description: OK
       x-codeSamples:
         - lang: curl
-          source: >
+          source: |
             curl -d "userSecretKey=j2d2v697-603c-4a2e-0yxz-ktyi448gp153&billCode=28mfcu8s" -X POST https://dev.toyyibpay.com/index.php/api/getBillTransactions
-          
-    
   /index.php/api/createBillMultiPayment:
     post:
       tags:
-        - "Bill"
+        - Bill
       summary: NOT YET
       description: Create bill for multiple payment
       responses:
         '200':
           description: OK
-    
   /index.php/api/runBill:
     post:
       tags:
-        - "Bill"
+        - Bill
       summary: NOT YET
       description: Run Bill can make customer do the payment
       responses:
         '200':
           description: OK
-    
   /admin/api/getAllBill:
     post:
       tags:
-        - "Bill"
+        - Bill
       summary: NOT YET
       description: Run Bill can make customer do the payment
       responses:
         '200':
           description: OK
-
-  # Bank
   /index.php/api/getBank:
     get:
       tags:
-        - "Bank"
+        - Bank
       summary: Get banks
       description: Get list of banks that can be used by user to make the payment.
       responses:
@@ -336,36 +356,31 @@ paths:
           description: OK
       x-codeSamples:
         - lang: curl
-          source: curl -X GET https://dev.toyyibpay.com/index.php/api/getBank
-
+          source: 'curl -X GET https://dev.toyyibpay.com/index.php/api/getBank'
   /index.php/api/getBankFPX:
     get:
       tags:
         - Bank
       summary: Get banks FPX
-      description: Get list of banks that are supported by Toyyibpay with bank code. When you use runBill api, bank code is required.
+      description: 'Get list of banks that are supported by Toyyibpay with bank code. When you use runBill api, bank code is required.'
       responses:
         '200':
           description: OK
       x-codeSamples:
         - lang: curl
-          source: curl -X GET https://dev.toyyibpay.com/index.php/api/getBankFPX
-
-  # Package
+          source: 'curl -X GET https://dev.toyyibpay.com/index.php/api/getBankFPX'
   /index.php/api/getPackage:
     get:
       tags:
         - Package
       summary: Get package
-      description: Get list of packages offered by ToyyibPay. When you create user with API call, you are required to provided package information.
+      description: 'Get list of packages offered by ToyyibPay. When you create user with API call, you are required to provided package information.'
       responses:
         '200':
           description: OK
       x-codeSamples:
         - lang: curl
-          source: curl -X GET https://dev.toyyibpay.com/index.php/api/getPackage
-
-  # User
+          source: 'curl -X GET https://dev.toyyibpay.com/index.php/api/getPackage'
   /index.php/api/createAccount:
     post:
       tags:
@@ -376,18 +391,16 @@ paths:
       responses:
         '200':
           description: OK
-  
   /index.php/api/getUserStatus:
     post:
       tags:
         - User
       summary: NOT YET
-      description: > 
+      description: |
         **For Enterprise Accunt Only**
       responses:
         '200':
           description: OK
-
   /admin/api/getAllUser:
     post:
       tags:
@@ -396,8 +409,6 @@ paths:
       responses:
         '200':
           description: OK
-
-  # Settlement
   /admin/api/getSettlement:
     post:
       tags:
@@ -406,7 +417,6 @@ paths:
       responses:
         '200':
           description: OK
-
   /admin/api/getSettlementSummary:
     post:
       tags:
@@ -415,7 +425,6 @@ paths:
       responses:
         '200':
           description: OK
-
 tags:
   - name: Bill
   - name: Return URL Parameter
@@ -447,7 +456,6 @@ tags:
       ```
       <your-return-url>/?refno=fawfw&status=1&billcode=90uf2fe&order_id=TRF20200923-XX021&reason=lorem-ipsum&amount=1150
       ```
-
   - name: Category
   - name: Bank
   - name: User

@@ -1,0 +1,13 @@
+{
+  "items": [
+    {
+      "type": "divider",
+      "title": "APIS"
+    },
+    {
+      "type": "item",
+      "title": "Toyyibpay Better Documentation (Unofficial)",
+      "uri": "openapi.yml"
+    }
+  ]
+}
