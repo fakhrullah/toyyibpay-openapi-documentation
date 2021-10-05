@@ -74,7 +74,9 @@ info:
     1. Login ToyyibPay or sandbox ToyyibPay _([dev.toyyibpay.com](https://dev.toyyibpay.com))_.
 
     2. Find your userSecretKey at the bottom left of main page (dashboard).  
-    ------ screenshot here ---
+    
+    ![location secretkey toyyibpay](/toyyibpay-secretkey-location.png)
+
 servers:
   - url: 'https://dev.toyyibpay.com'
     description: Sandbox server. Use this url for testing.
