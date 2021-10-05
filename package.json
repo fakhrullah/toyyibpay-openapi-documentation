@@ -1,6 +1,6 @@
 {
   "name": "toyyibpay-better-doc",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "ToyyibPay better documentation (Unofficial)",
   "main": "index.js",
   "scripts": {
